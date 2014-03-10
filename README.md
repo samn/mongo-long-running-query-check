@@ -24,5 +24,5 @@ and [riemann-sumd](https://github.com/bmhatfield/riemann-sumd).
     service: 'mongo-long-running-query-check'
     arg: 'mongo-long-running-query-check.py'
     ttl: 350
-    tags: ['notify-every', 'ignore-expired', 'mongo-queries']
+    tags: ['notify', 'mongo-queries']
     type: 'json'

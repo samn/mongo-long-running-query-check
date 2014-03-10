@@ -34,21 +34,27 @@ class MongoLongRunningQueryCheck():
 
     def event_description(long_running_queries):
         return """
-        Long Running Queries (longer than %(max_query_duration_seconds)s seconds) have been found.
+        Long Running MongoDB Queries (longer than %(max_query_duration_seconds)s seconds)
 
         To kill a query:
         1. $ ssh this-mongodb-server
         2. $ mongo
         3. > db.killOp(opId)
 
+        Queries running longer than %(max_query_duration_seconds)s seconds:
         %(long_running_queries)s
         """ % {"max_query_duration_seconds": self.max_query_duration_seconds,
                "long_running_queries": long_running_queries}
 
     def construct_event(self, long_running_queries):
+        if self.output_indicator in long_queries_output:
+            state = "critical"
+        else:
+            state = "ok"
+
         event = {}
         event["service"] = "MongoDB Long Running Queries"
-        event["state"] = "critical"
+        event["state"] = state
         event["metric"] = long_running_queries.count(self.output_indicator)
         event["description"] = self.event_description(long_running_queries)
         event["attributes"] = {}
@@ -57,9 +63,8 @@ class MongoLongRunningQueryCheck():
 
     def report_long_queries(self):
         long_queries_output = self.get_long_running_queries()
-        if self.output_indicator in long_queries_output:
             event = construct_event(long_queries_output)
-            print json.dumps(event)
+            print json.dumps([event])
 
 if __name__ == "__main__":
     parser = OptionParser()
