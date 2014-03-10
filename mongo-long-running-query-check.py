@@ -16,8 +16,8 @@ class MongoLongRunningQueryCheck():
         return """
         db.currentOp().inprog.forEach(
             function(op) {
-                if(op.secs_running >= %(max_query_duration_seconds)s) {
-                    print("%(output_indicator)s);
+                if (op.secs_running >= %(max_query_duration_seconds)s) {
+                    print("%(output_indicator)s");
                     printjson(op);
                 }
             }
@@ -25,7 +25,7 @@ class MongoLongRunningQueryCheck():
         """ % self.__dict__
 
     def get_long_running_queries(self):
-        command = ["mongo", "--host", self.host, "--eval", self.query_command()]
+        command = ["mongo", "--host", self.host, "--quiet", "--eval", self.query_command()]
         if self.username:
             command.extend(["--username", self.username])
         if self.password:
