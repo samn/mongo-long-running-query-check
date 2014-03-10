@@ -32,7 +32,7 @@ class MongoLongRunningQueryCheck():
             command.extend(["--password", self.password])
         return subprocess.check_output(command)
 
-    def event_description(long_running_queries):
+    def event_description(self, long_running_queries):
         return """
         Long Running MongoDB Queries (longer than %(max_query_duration_seconds)s seconds)
 
@@ -47,7 +47,7 @@ class MongoLongRunningQueryCheck():
                "long_running_queries": long_running_queries}
 
     def construct_event(self, long_running_queries):
-        if self.output_indicator in long_queries_output:
+        if self.output_indicator in long_running_queries:
             state = "critical"
         else:
             state = "ok"
