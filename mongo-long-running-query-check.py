@@ -8,7 +8,9 @@ class MongoLongRunningQueryCheck():
     def __init__(self, options):
         self.host = options.host
         self.max_query_duration_seconds = options.max_query_duration_seconds
-        self.output_indicator = 'Long Running Query Found:'
+        self.output_indicator = "Long Running Query Found:"
+        self.username = options.username
+        self.password = options.password
 
     def query_command(self):
         return """
@@ -23,7 +25,12 @@ class MongoLongRunningQueryCheck():
         """ % self.__dict__
 
     def get_long_running_queries(self):
-        return subprocess.check_output(["mongo", "--host", self.host, "--eval", self.query_command()])
+        command = ["mongo", "--host", self.host, "--eval", self.query_command()]
+        if self.username:
+            command.extend(["--username", self.username])
+        if self.password:
+            command.extend(["--password", self.password])
+        return subprocess.check_output(command)
 
     def event_description(long_running_queries):
         return """
@@ -58,5 +65,7 @@ if __name__ == "__main__":
     parser = OptionParser()
     parser.add_option("--host", default="localhost", help="The host of the database to monitor. (default=localhost)")
     parser.add_option("--max-query-duration-seconds", default=120, help="Queries that have been running for at least this many seconds will be reported (default = 120)")
+    parser.add_option("--username", help="The username used to authenticate with mongo")
+    parser.add_option("--password", help="The password used to authenticate with mongo")
     options, args = parser.parse_args()
     MongoLongRunningQueryCheck(options).report_long_queries()

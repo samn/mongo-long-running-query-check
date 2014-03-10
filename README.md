@@ -15,6 +15,8 @@ and [riemann-sumd](https://github.com/bmhatfield/riemann-sumd).
     --max-query-duration-seconds=MAX_QUERY_DURATION_SECONDS
                             Queries that have been running for at least this many
                             seconds will be reported (default = 120)
+    --username=USERNAME   The username used to authenticate with mongo
+    --password=PASSWORD   The password used to authenticate with mongo
 
 
 ### riemann-sumd config
