@@ -63,8 +63,8 @@ class MongoLongRunningQueryCheck():
 
     def report_long_queries(self):
         long_queries_output = self.get_long_running_queries()
-            event = construct_event(long_queries_output)
-            print json.dumps([event])
+        event = construct_event(long_queries_output)
+        print json.dumps([event])
 
 if __name__ == "__main__":
     parser = OptionParser()
